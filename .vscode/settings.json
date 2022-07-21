@@ -1,0 +1,7 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "files.associations": {
+        "*.c": "c",
+        "rtc.h": "c"
+    }
+}
