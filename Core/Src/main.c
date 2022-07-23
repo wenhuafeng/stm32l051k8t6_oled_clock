@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "lptim.h"
 #include "rtc.h"
 #include "usart.h"
@@ -94,8 +95,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_RTC_Init();
-  MX_USART1_UART_Init();
+  MX_DMA_Init();
   MX_LPTIM1_Init();
+  MX_USART2_UART_Init();
+  MX_USART1_UART_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
@@ -176,8 +179,9 @@ void SystemClock_Config(void)
 
   LL_SetSystemCoreClock(32000000);
   LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_PCLK2);
+  LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
   LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
-  LL_RCC_SetLPTIMClockSource(LL_RCC_LPTIM1_CLKSOURCE_PCLK1);
+  LL_RCC_SetLPTIMClockSource(LL_RCC_LPTIM1_CLKSOURCE_LSE);
 }
 
 /**

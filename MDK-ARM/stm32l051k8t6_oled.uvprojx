@@ -333,7 +333,7 @@
               <MiscControls />
               <Define>USE_FULL_LL_DRIVER,STM32L051xx,HSE_VALUE=8000000,HSE_STARTUP_TIMEOUT=100,LSE_STARTUP_TIMEOUT=5000,LSE_VALUE=32768,MSI_VALUE=2097000,HSI_VALUE=16000000,LSI_VALUE=37000,VDD_VALUE=3300,PREFETCH_ENABLE=0,INSTRUCTION_CACHE_ENABLE=1,DATA_CACHE_ENABLE=1</Define>
               <Undefine />
-              <IncludePath>../Core/Inc;../Drivers/STM32L0xx_HAL_Driver/Inc;../Drivers/CMSIS/Device/ST/STM32L0xx/Include;../Drivers/CMSIS/Include;../user/clock;../user/common;../user/oled</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32L0xx_HAL_Driver/Inc;../Drivers/CMSIS/Device/ST/STM32L0xx/Include;../Drivers/CMSIS/Include;../user/clock;../user/common;../user/oled;../user/temp_humi;../user/wifi</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -403,14 +403,9 @@
               <FilePath>../Core/Src/adc.c</FilePath>
             </File>
             <File>
-              <FileName>i2c.c</FileName>
+              <FileName>dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Core/Src/i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>lptim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/lptim.c</FilePath>
+              <FilePath>../Core/Src/dma.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -464,6 +459,58 @@
                     <useXO>2</useXO>
                     <ClangAsOpt>1</ClangAsOpt>
                   </Aads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>lptim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/lptim.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                  </Cads>
                 </FileArmAds>
               </FileOption>
             </File>
@@ -562,7 +609,6 @@
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
                     <uC99>2</uC99>
-                    <uGnu>2</uGnu>
                     <useXO>2</useXO>
                     <v6Lang>0</v6Lang>
                     <v6LangP>0</v6LangP>
@@ -572,18 +618,6 @@
                     <v6WtE>2</v6WtE>
                     <v6Rtti>2</v6Rtti>
                   </Cads>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <ClangAsOpt>1</ClangAsOpt>
-                  </Aads>
                 </FileArmAds>
               </FileOption>
             </File>
@@ -632,7 +666,6 @@
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
                     <uC99>2</uC99>
-                    <uGnu>2</uGnu>
                     <useXO>2</useXO>
                     <v6Lang>0</v6Lang>
                     <v6LangP>0</v6LangP>
@@ -642,18 +675,6 @@
                     <v6WtE>2</v6WtE>
                     <v6Rtti>2</v6Rtti>
                   </Cads>
-                  <Aads>
-                    <interw>2</interw>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <thumb>2</thumb>
-                    <SplitLS>2</SplitLS>
-                    <SwStkChk>2</SwStkChk>
-                    <NoWarn>2</NoWarn>
-                    <uSurpInc>2</uSurpInc>
-                    <useXO>2</useXO>
-                    <ClangAsOpt>1</ClangAsOpt>
-                  </Aads>
                 </FileArmAds>
               </FileOption>
             </File>
@@ -721,6 +742,41 @@
               <FileName>ssd1306.c</FileName>
               <FileType>1</FileType>
               <FilePath>../user/oled/ssd1306.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>user/temp_humi</GroupName>
+          <Files>
+            <File>
+              <FileName>si7021_iic_hw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../user/temp_humi/si7021_iic_hw.c</FilePath>
+            </File>
+            <File>
+              <FileName>si7021_iic_sw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../user/temp_humi/si7021_iic_sw.c</FilePath>
+            </File>
+            <File>
+              <FileName>si7021.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../user/temp_humi/si7021.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>user/wifi</GroupName>
+          <Files>
+            <File>
+              <FileName>esp8266_at.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../user/wifi/esp8266_at.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi_uart_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../user/wifi/wifi_uart_if.c</FilePath>
             </File>
           </Files>
         </Group>

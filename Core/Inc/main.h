@@ -29,6 +29,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 
 #include "stm32l0xx_ll_adc.h"
+#include "stm32l0xx_ll_dma.h"
 #include "stm32l0xx_ll_i2c.h"
 #include "stm32l0xx_ll_lptim.h"
 #include "stm32l0xx_ll_crs.h"
@@ -39,7 +40,6 @@ extern "C" {
 #include "stm32l0xx_ll_cortex.h"
 #include "stm32l0xx_ll_utils.h"
 #include "stm32l0xx_ll_pwr.h"
-#include "stm32l0xx_ll_dma.h"
 #include "stm32l0xx_ll_rtc.h"
 #include "stm32l0xx_ll_spi.h"
 #include "stm32l0xx_ll_usart.h"
@@ -69,6 +69,9 @@ extern "C" {
 #define SSD1306_I2C_SOFTWARE 1
 #define SSD1306_I2C_HARDWARE 0
 #define SUPPORT_OLED_DISPLAY 1
+#define SI7021_I2C_SOFTWARE  1
+#define SI7021_I2C_HARDWARE  0
+#define WIFI_GET_TIME        1
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -79,6 +82,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define WIFI_ENABLE_Pin LL_GPIO_PIN_1
+#define WIFI_ENABLE_GPIO_Port GPIOA
 #define RUN_LED_Pin LL_GPIO_PIN_8
 #define RUN_LED_GPIO_Port GPIOA
 #ifndef NVIC_PRIORITYGROUP_0

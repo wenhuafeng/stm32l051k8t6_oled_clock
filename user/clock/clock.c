@@ -105,25 +105,17 @@ calc_week:
     return true;
 }
 
-void CLOCK_Get(struct TimeType *time)
+void CLOCK_Get(void)
 {
-    //LL_RTC_TimeTypeDef sTime;
-    //LL_RTC_DateTypeDef sDate;
+    struct TimeType *time = &g_time;
 
-    if (time == NULL) {
-        return;
-    }
-
-    //LL_RTC_TS_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-    //LL_RTC_TS_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-
-    time->second = __LL_RTC_CONVERT_BCD2BIN(LL_RTC_TIME_GetSecond(RTC));
-    time->minute = __LL_RTC_CONVERT_BCD2BIN(LL_RTC_TIME_GetMinute(RTC));
-    time->hour   = __LL_RTC_CONVERT_BCD2BIN(LL_RTC_TIME_GetHour(RTC));
-    time->day    = __LL_RTC_CONVERT_BCD2BIN(LL_RTC_DATE_GetDay(RTC));
-    time->month  = __LL_RTC_CONVERT_BCD2BIN(LL_RTC_DATE_GetMonth(RTC));
-    time->week   = __LL_RTC_CONVERT_BCD2BIN(LL_RTC_DATE_GetWeekDay(RTC));
-    time->year   = (__LL_RTC_CONVERT_BCD2BIN(LL_RTC_DATE_GetYear(RTC)) + 2000);
+    time->second = LL_RTC_TIME_GetSecond(RTC);
+    time->minute = LL_RTC_TIME_GetMinute(RTC);
+    time->hour   = LL_RTC_TIME_GetHour(RTC);
+    time->day    = LL_RTC_DATE_GetDay(RTC);
+    time->month  = LL_RTC_DATE_GetMonth(RTC);
+    time->week   = LL_RTC_DATE_GetWeekDay(RTC);
+    time->year   = (LL_RTC_DATE_GetYear(RTC) + 2000);
 
     LOGI(LOG_TAG, "get time: %d-%d-%d %02d:%02d:%02d \r\n", time->year, time->month, time->day, time->hour,
          time->minute, time->second);
@@ -146,9 +138,6 @@ void CLOCK_Set(struct TimeType *time)
     sDate.Month   = time->month;
     sDate.WeekDay = time->week;
     sDate.Year    = (time->year % 100);
-
-    //LL_RTC_TS_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-    //LL_RTC_TS_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
     LL_RTC_DisableWriteProtection(RTC);
     LL_RTC_EnableInitMode(RTC);

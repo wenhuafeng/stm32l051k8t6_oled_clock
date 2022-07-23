@@ -5,6 +5,9 @@
 #include "clock.h"
 #include "display.h"
 #include "trace.h"
+#include "si7021.h"
+#include "wifi_uart_if.h"
+#include "esp8266_at.h"
 
 #define LOG_TAG          "common"
 #define SOFTWARE_VERSION "V101"
@@ -168,6 +171,9 @@ void COMMON_Init(void)
 {
     LPTIM1_CounterStartIT();
     DISP_Init();
+    SI7021_SampleTempHumi();
+    WIFI_UART_ReceiveDmaInit();
+    WIFI_Power(GetWifiData(), WIFI_POWER_ON);
     LOGI(LOG_TAG, "%s, %s, %s\r\n", SOFTWARE_VERSION, __TIME__, __DATE__);
 }
 
@@ -178,7 +184,10 @@ void COMMON_Function(void)
         f_1s = false;
         LED_BLINK();
         CLOCK_Run();
+        SI7021_SampleTempHumi();
         DISP_Clock();
-        LOGI(LOG_TAG, "500MS\r\n");
+        WIFI_SendCommand(GetWifiData());
     }
+
+    //WIFI_UART_ReceiveProcess(GetWifiData());
 }

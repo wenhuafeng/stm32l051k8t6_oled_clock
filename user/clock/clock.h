@@ -16,7 +16,7 @@ struct TimeType {
 
 void CLOCK_CalculateWeek(struct TimeType *time);
 bool CLOCK_Run(void);
-void CLOCK_Get(struct TimeType *time);
+void CLOCK_Get(void);
 void CLOCK_Set(struct TimeType *time);
 struct TimeType *CLOCK_GetData(void);
 

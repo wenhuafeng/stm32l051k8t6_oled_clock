@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "common.h"
+#include "wifi_uart_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,6 +157,20 @@ void RTC_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA1 channel 4, channel 5, channel 6 and channel 7 interrupts.
+  */
+void DMA1_Channel4_5_6_7_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel4_5_6_7_IRQn 0 */
+
+  /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel4_5_6_7_IRQn 1 */
+}
+
+/**
   * @brief This function handles LPTIM1 global interrupt / LPTIM1 wake-up interrupt through EXTI line 29.
   */
 void LPTIM1_IRQHandler(void)
@@ -166,6 +181,20 @@ void LPTIM1_IRQHandler(void)
   /* USER CODE BEGIN LPTIM1_IRQn 1 */
   LPTIM1_IsrHandle();
   /* USER CODE END LPTIM1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART2 global interrupt / USART2 wake-up interrupt through EXTI line 26.
+  */
+void USART2_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+  //WIFI_UART_SetReceiveFlag();
+  WIFI_UART_ReceiveIdle();
+  /* USER CODE END USART2_IRQn 0 */
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
