@@ -117,9 +117,8 @@ void PrintUsart2(char *format, ...)
 
 #else
 
-void WIFI_UART_ReceiveIDLE(USART_TypeDef *huart)
+void WIFI_UART_ReceiveIDLE(void)
 {
-    (void)huart;
 }
 void WIFI_UART_TxCpltCallback(USART_TypeDef *huart)
 {

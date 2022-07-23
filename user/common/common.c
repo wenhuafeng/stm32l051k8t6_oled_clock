@@ -31,15 +31,9 @@ static bool f_2s;
 
 static void LPTIM1_CounterStartIT(void)
 {
-    /* Enable the Autoreload match Interrupt */
     LL_LPTIM_EnableIT_ARRM(LPTIM1);
-    /* Enable the LPTIM1 counter */
     LL_LPTIM_Enable(LPTIM1);
-
-    /* Set the Autoreload value */
     LL_LPTIM_SetAutoReload(LPTIM1, LPTIM1_INT_TIME);
-
-    /* Start the LPTIM counter in continuous mode */
     LL_LPTIM_StartCounter(LPTIM1, LL_LPTIM_OPERATING_MODE_CONTINUOUS);
 }
 
@@ -179,15 +173,14 @@ void COMMON_Init(void)
 
 void COMMON_Function(void)
 {
-    //EnterStop();
-    if (f_1s == true) {
-        f_1s = false;
-        LED_BLINK();
-        CLOCK_Run();
-        SI7021_SampleTempHumi();
-        DISP_Clock();
-        WIFI_SendCommand(GetWifiData());
+    if (f_1s == false) {
+        return;
     }
+    f_1s = false;
 
-    //WIFI_UART_ReceiveProcess(GetWifiData());
+    LED_BLINK();
+    CLOCK_Run();
+    SI7021_SampleTempHumi();
+    WIFI_SendCommand(GetWifiData());
+    DISP_Clock();
 }

@@ -52,7 +52,7 @@
     } while (0)
 
 #define WIFI_OFF            0
-#define WIFI_ON_TIME        (2 * 60) /* 3 min */
+#define WIFI_ON_TIME        (2 * 60) /* 2 min */
 #define WIFI_GET_TIME_TIMES (5U)
 #define WIFI_SET_SNTP_TIMES (5U)
 
@@ -136,30 +136,27 @@ static uint8_t GetMonth(char *monthString)
 
 static bool ProcessClock(struct Esp8266GetTimeType *wifi, char *cRxBuf)
 {
-    char str[4] = { 0 };
+    char str[4] = {0};
     struct TimeType time;
     int ret;
 
     ret = snprintf(str, sizeof(str), "%s", &cRxBuf[WEEK_STR_INDEX]);
     if (ret <= 0) {
-        LOGE(LOG_TAG, "snprintf error!\r\n");
         return false;
     }
     time.week = GetWeek(str);
 
     ret = snprintf(str, sizeof(str), "%s", &cRxBuf[MONTH_STR_INDEX]);
     if (ret <= 0) {
-        LOGE(LOG_TAG, "snprintf error!\r\n");
         return false;
     }
     time.month = GetMonth(str);
-
     time.day    = AscToHex(cRxBuf[DAY_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[DAY_STR_INDEX_LOW]);
     time.hour   = AscToHex(cRxBuf[HOUR_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[HOUR_STR_INDEX_LOW]);
     time.minute = AscToHex(cRxBuf[MIN_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[MIN_STR_INDEX_LOW]);
     time.second = AscToHex(cRxBuf[SEC_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[SEC_STR_INDEX_LOW]);
     time.year   = AscToHex(cRxBuf[YEAR_STR_INDEX_THOUSAND]) * 1000 + AscToHex(cRxBuf[YEAR_STR_INDEX_HUNDRED]) * 100 +
-                AscToHex(cRxBuf[YEAR_STR_INDEX_TEN]) * 10 + AscToHex(cRxBuf[YEAR_STR_INDEX]);
+                  AscToHex(cRxBuf[YEAR_STR_INDEX_TEN]) * 10 + AscToHex(cRxBuf[YEAR_STR_INDEX]);
 
     if (time.year < YEAR_MIN || time.year > YEAR_MAX) {
         return false;

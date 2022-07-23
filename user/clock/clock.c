@@ -1,6 +1,5 @@
 #include "clock.h"
 #include <stdbool.h>
-//#include "common.h"
 #include "rtc.h"
 #include "trace.h"
 
@@ -134,7 +133,7 @@ void CLOCK_Set(struct TimeType *time)
     sTime.Minutes = time->minute;
     sTime.Hours   = time->hour;
 
-    sDate.Day    = time->day;
+    sDate.Day     = time->day;
     sDate.Month   = time->month;
     sDate.WeekDay = time->week;
     sDate.Year    = (time->year % 100);
@@ -144,7 +143,6 @@ void CLOCK_Set(struct TimeType *time)
     while (LL_RTC_IsActiveFlag_INIT(RTC) != 1);
     LL_RTC_TIME_Config(RTC, LL_RTC_TIME_FORMAT_AM_OR_24, sTime.Hours, sTime.Minutes, sTime.Seconds);
     LL_RTC_DATE_Config(RTC, sDate.WeekDay, sDate.Day, sDate.Month, sDate.Year);
-    //Exit_RTC_InitMode();
     LL_RTC_DisableInitMode(RTC);
     LL_RTC_ClearFlag_RS(RTC);
     while(LL_RTC_IsActiveFlag_RS(RTC) != 1);
