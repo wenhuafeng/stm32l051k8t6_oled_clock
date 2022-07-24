@@ -66,11 +66,14 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define SSD1306_I2C_SOFTWARE 1
-#define SSD1306_I2C_HARDWARE 0
 #define SUPPORT_OLED_DISPLAY 1
-#define SI7021_I2C_SOFTWARE  1
-#define SI7021_I2C_HARDWARE  0
+#define SSD1306_I2C_SOFTWARE 0
+#define SSD1306_I2C_HARDWARE 1
+
+#define SUPPORT_SI7021       1
+#define SI7021_I2C_SOFTWARE  0
+#define SI7021_I2C_HARDWARE  1
+
 #define WIFI_GET_TIME        1
 /* USER CODE END EM */
 

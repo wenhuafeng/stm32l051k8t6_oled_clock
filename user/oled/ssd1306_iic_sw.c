@@ -6,7 +6,7 @@
 #include "common.h"
 #include "trace.h"
 
-#define TAG_LOG "iic_sw"
+#define TAG_LOG "ssd2306_iic_sw"
 
 #define I2C_DELAY 100
 

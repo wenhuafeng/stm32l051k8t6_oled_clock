@@ -6,7 +6,7 @@
 #include "i2c.h"
 #include "trace.h"
 
-#define LOG_TAG "iic_hw"
+#define LOG_TAG "ssd2306_iic_hw"
 
 //  _____ ___   _____
 // |_   _|__ \ / ____|
@@ -32,30 +32,30 @@ void SSD1306_I2C_Init(void)
     LL_I2C_Enable(I2C1);
 }
 
-static void SSD1306_I2C_Write(uint8_t addr, uint8_t *buf, uint16_t count)
+static void SSD1306_I2C_Write(uint8_t reg, uint8_t *buf, uint16_t count)
 {
     uint16_t i;
 
-    //LIB_I2C_POLLING(LL_I2C_IsActiveFlag_BUSY(I2C1));
+    LIB_I2C_POLLING(LL_I2C_IsActiveFlag_BUSY(I2C1));
 
-    //LL_I2C_AcknowledgeNextData(I2C1, LL_I2C_ACK);
+    LL_I2C_SetSlaveAddr(I2C1, SSD1306_I2C_ADDR);
+    LL_I2C_SetTransferRequest(I2C1, LL_I2C_REQUEST_WRITE);
+    LL_I2C_SetTransferSize(I2C1, count + 1);
+
     LL_I2C_GenerateStartCondition(I2C1);
     LIB_I2C_POLLING(!(LL_I2C_IsActiveFlag_TXE(I2C1)));
-
-    LL_I2C_TransmitData8(I2C1, (SSD1306_I2C_ADDR | LL_I2C_REQUEST_WRITE));
-    LIB_I2C_POLLING(!LL_I2C_IsActiveFlag_ADDR(I2C1));
-    //LL_I2C_ClearFlag_ADDR(I2C1);
-
-    LL_I2C_TransmitData8(I2C1, addr);
-    LIB_I2C_POLLING(!LL_I2C_IsActiveFlag_TXE(I2C1));
+    LL_I2C_TransmitData8(I2C1, reg);
+    LIB_I2C_POLLING(!(LL_I2C_IsActiveFlag_TXE(I2C1)));
     for (i = 0; i < count; i++) {
         LL_I2C_TransmitData8(I2C1, buf[i]);
         LIB_I2C_POLLING(!LL_I2C_IsActiveFlag_TXE(I2C1));
     }
     LL_I2C_GenerateStopCondition(I2C1);
+    LIB_I2C_POLLING(LL_I2C_IsActiveFlag_BUSY(I2C1));
+    return;
 
 I2C_ERROR:
-    NOP();
+    LL_I2C_GenerateStopCondition(I2C1);
     LOGE(LOG_TAG, "ssd1306 i2c write!\r\n");
 }
 

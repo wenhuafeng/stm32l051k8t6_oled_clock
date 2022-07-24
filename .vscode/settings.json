@@ -4,6 +4,7 @@
         "*.c": "c",
         "rtc.h": "c",
         "stdbool.h": "c",
-        "usart.h": "c"
+        "usart.h": "c",
+        "display.h": "c"
     }
 }

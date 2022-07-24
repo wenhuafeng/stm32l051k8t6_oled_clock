@@ -165,10 +165,12 @@ void COMMON_Init(void)
 {
     LPTIM1_CounterStartIT();
     DISP_Init();
-    SI7021_SampleTempHumi();
+    SI7021_Init();
     WIFI_UART_ReceiveDmaInit();
-    WIFI_Power(GetWifiData(), WIFI_POWER_ON);
     LOGI(LOG_TAG, "%s, %s, %s\r\n", SOFTWARE_VERSION, __TIME__, __DATE__);
+
+    SI7021_SampleTempHumi();
+    WIFI_Power(GetWifiData(), WIFI_POWER_ON);
 }
 
 void COMMON_Function(void)

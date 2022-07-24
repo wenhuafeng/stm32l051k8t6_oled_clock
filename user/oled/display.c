@@ -1,3 +1,5 @@
+#include "main.h"
+#if defined(SUPPORT_OLED_DISPLAY) && SUPPORT_OLED_DISPLAY
 #include "display.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -57,3 +59,10 @@ void DISP_Clock(void)
 
     SSD1306_UpdateScreen();
 }
+
+#else
+
+void DISP_Init(void) {}
+void DISP_Clock(void) {}
+
+#endif

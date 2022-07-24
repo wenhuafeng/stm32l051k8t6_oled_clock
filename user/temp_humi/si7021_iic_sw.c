@@ -193,12 +193,34 @@ static uint8_t CalcCrc8(uint8_t crc, uint8_t *buf, uint8_t size)
         for (uint8_t i = 0; i < 8; i++) {
             if (crc & 0x80) {
                 crc = (crc << 1) ^ 0x31;
-            } else
+            } else {
                 crc <<= 1;
+            }
         }
     }
 
     return crc;
+}
+
+void SI7021_I2C_Init(void)
+{
+    LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    GPIO_InitStruct.Pin = SCL_Pin;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(SCL_GPIO_Port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = SDA_Pin;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(SDA_GPIO_Port, &GPIO_InitStruct);
+
+    I2C_Stop();
 }
 
 bool SI7021_Measure(uint8_t type, struct Si7021Type *th)
@@ -209,7 +231,7 @@ bool SI7021_Measure(uint8_t type, struct Si7021Type *th)
     float buffer;
 
     I2C_Start();
-    if (I2C_SendByte(SALVE_ADDR) == false) { // slave addr
+    if (I2C_SendByte(SI7021_ADDR) == false) { // slave addr
         goto ERROR;
     }
     if (I2C_SendByte(type) == false) { // measure cmd
@@ -218,7 +240,7 @@ bool SI7021_Measure(uint8_t type, struct Si7021Type *th)
 
     LL_mDelay(100);
     I2C_Start();
-    if (I2C_SendByte(SALVE_ADDR + 1) == false) {
+    if (I2C_SendByte(SI7021_ADDR + 1) == false) {
         goto ERROR;
     }
 
