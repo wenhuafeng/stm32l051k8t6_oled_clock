@@ -38,6 +38,7 @@ static void SSD1306_I2C_Write(uint8_t reg, uint8_t *buf, uint16_t count)
 
     LIB_I2C_POLLING(LL_I2C_IsActiveFlag_BUSY(I2C1));
 
+    LL_I2C_DisableAutoEndMode(I2C1);
     LL_I2C_SetSlaveAddr(I2C1, SSD1306_I2C_ADDR);
     LL_I2C_SetTransferRequest(I2C1, LL_I2C_REQUEST_WRITE);
     LL_I2C_SetTransferSize(I2C1, count + 1);
