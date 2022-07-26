@@ -134,6 +134,7 @@ bool Get2sFlag(void)
     return f_2s;
 }
 
+#if 0
 static void EnterStop(void)
 {
     /* 开启PWR时钟 */
@@ -160,6 +161,7 @@ static void EnterStop(void)
     __WFI();
     //power_on();
 }
+#endif
 
 void COMMON_Init(void)
 {
