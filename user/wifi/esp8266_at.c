@@ -42,12 +42,12 @@
 #define WIFI_PD_Pin  LL_GPIO_PIN_1
 #define WIFI_PD_Port GPIOA
 
-#define WIFI_PD_HIGH()                                \
-    do {                                              \
+#define WIFI_PD_HIGH()                                   \
+    do {                                                 \
         LL_GPIO_SetOutputPin(WIFI_PD_Port, WIFI_PD_Pin); \
     } while (0)
-#define WIFI_PD_LOW()                                   \
-    do {                                                \
+#define WIFI_PD_LOW()                                      \
+    do {                                                   \
         LL_GPIO_ResetOutputPin(WIFI_PD_Port, WIFI_PD_Pin); \
     } while (0)
 
@@ -150,7 +150,7 @@ static bool ProcessClock(struct Esp8266GetTimeType *wifi, char *cRxBuf)
     if (ret <= 0) {
         return false;
     }
-    time.month = GetMonth(str);
+    time.month  = GetMonth(str);
     time.day    = AscToHex(cRxBuf[DAY_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[DAY_STR_INDEX_LOW]);
     time.hour   = AscToHex(cRxBuf[HOUR_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[HOUR_STR_INDEX_LOW]);
     time.minute = AscToHex(cRxBuf[MIN_STR_INDEX_HIGH]) * 10 + AscToHex(cRxBuf[MIN_STR_INDEX_LOW]);
