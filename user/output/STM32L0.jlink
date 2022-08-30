@@ -1,0 +1,5 @@
+h
+loadfile user/output/stm32l051k8t6_oled.hex 0x8000000
+g
+r
+qc

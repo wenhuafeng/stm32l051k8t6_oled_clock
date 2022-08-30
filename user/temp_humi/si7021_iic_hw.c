@@ -8,6 +8,11 @@
 
 #define LOG_TAG "si7021_iic_hw"
 
+#define HUMI_MAX 999
+#define HUMI_MIN 200
+#define TEMP_MAX 999
+#define TEMP_MIN -200
+
 #define HSB 0
 #define LSB 1
 
@@ -91,10 +96,24 @@ bool SI7021_Measure(uint8_t type, struct Si7021Type *th)
         buffer   = temp * 125.0;
         buffer   = buffer / 65536 - 6;
         th->humi = buffer * 10;
+        if (th->humi > HUMI_MAX) {
+            th->humi = HUMI_MAX;
+        } else if (th->humi < HUMI_MIN) {
+            th->humi = HUMI_MIN;
+        } else {
+            ;
+        }
     } else {
         buffer   = temp * 175.72;
         buffer   = buffer / 65536 - 46.85;
         th->temp = buffer * 10;
+        if (th->temp > TEMP_MAX) {
+            th->temp = TEMP_MAX;
+        } else if (th->temp < TEMP_MIN) {
+            th->temp = TEMP_MIN;
+        } else {
+            ;
+        }
     }
     return true;
 
