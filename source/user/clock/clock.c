@@ -74,13 +74,13 @@ bool CLOCK_Run(void)
     time->second = 0;
     time->minute++;
     if (time->minute < 60) {
-        return false;
+        goto print_clock;
     }
 
     time->minute = 0;
     time->hour++;
     if (time->hour < 24) {
-        return false;
+        goto print_clock;
     }
 
     time->hour = 0;
@@ -100,8 +100,12 @@ bool CLOCK_Run(void)
 
 calc_week:
     CLOCK_CalculateWeek(time);
-
     return true;
+
+print_clock:
+    LOGI(LOG_TAG, "time: %d-%d-%d %02d:%02d:%02d \r\n", time->year, time->month, time->day, time->hour,
+         time->minute, time->second);
+    return false;
 }
 
 void CLOCK_Get(void)

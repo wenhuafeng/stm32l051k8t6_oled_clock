@@ -65,7 +65,7 @@
 char *g_wifiCmdTable[WIFI_INIT_TOTAL_STEP] = {
     "AT+RST\r\n",
     "AT+CWMODE=1\r\n",
-    "AT+CWJAP_DEF=\"@Ruijie-501\",\"Aa15915406389\"\r\n",
+    "AT+CWJAP_DEF=\"whf\",\"a1234567\"\r\n",
     "AT+CIPSNTPCFG=1,8\r\n",
     "AT+CIPSNTPTIME?\r\n",
     "AT+GMR\r\n",
