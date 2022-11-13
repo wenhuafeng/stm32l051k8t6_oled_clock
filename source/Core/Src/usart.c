@@ -170,11 +170,42 @@ void MX_USART2_UART_Init(void)
   LL_USART_ConfigAsyncMode(USART2);
   LL_USART_Enable(USART2);
   /* USER CODE BEGIN USART2_Init 2 */
-
+  LL_USART_EnableIT_IDLE(USART2);
   /* USER CODE END USART2_Init 2 */
 
 }
 
 /* USER CODE BEGIN 1 */
+uint16_t uart2_get_dmarx_buf_remain_size(void)
+{
+  return LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_5);
+}
+
+void uart2_dmarx_config(uint8_t *mem_addr, uint32_t mem_size)
+{
+  LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_5);
+  LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_5, LL_USART_DMA_GetRegAddr(USART2, LL_USART_DMA_REG_DATA_RECEIVE));
+  LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_5, (uint32_t)mem_addr);
+  LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, mem_size);
+
+  LL_USART_EnableDMAReq_RX(USART2);
+  //LL_DMA_EnableIT_HT(DMA1, LL_DMA_CHANNEL_5);
+  //LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_5);
+  LL_DMA_ClearFlag_GI5(DMA1);
+  LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_5);
+}
+
+void uart2_dmatx_config(uint8_t *mem_addr, uint32_t mem_size)
+{
+  LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_4);
+  LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_4, LL_USART_DMA_GetRegAddr(USART2, LL_USART_DMA_REG_DATA_TRANSMIT));
+  LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t)mem_addr);
+  LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_4, mem_size);
+
+  LL_USART_EnableDMAReq_TX(USART2);
+  LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_4);
+  LL_DMA_ClearFlag_GI4(DMA1);
+  LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
+}
 
 /* USER CODE END 1 */

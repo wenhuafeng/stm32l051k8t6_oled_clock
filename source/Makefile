@@ -61,6 +61,7 @@ Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_lptim.c \
 Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_pwr.c \
 user/clock/clock.c \
 user/common/common.c \
+user/common/fifo.c \
 user/oled/display.c \
 user/oled/fonts.c \
 user/oled/ssd1306_iic_hw.c \
@@ -70,7 +71,8 @@ user/temp_humi/si7021_iic_hw.c \
 user/temp_humi/si7021_iic_sw.c \
 user/temp_humi/si7021.c \
 user/wifi/esp8266_at.c \
-user/wifi/wifi_uart_if.c
+user/wifi/wifi_uart_if.c \
+user/wifi/wifi_uart.c
 
 # ASM sources
 ASM_SOURCES =  \

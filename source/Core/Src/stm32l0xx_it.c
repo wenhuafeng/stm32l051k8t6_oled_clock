@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "common.h"
 #include "wifi_uart_if.h"
+#include "wifi_uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -162,11 +163,22 @@ void RTC_IRQHandler(void)
 void DMA1_Channel4_5_6_7_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 0 */
+  if (LL_DMA_IsEnabledIT_HT(DMA1, LL_DMA_CHANNEL_5) && LL_DMA_IsActiveFlag_HT5(DMA1)){
+    uart_dmarx_half_done_isr(DEV_UART2);
+    LL_DMA_ClearFlag_HT5(DMA1);
+  }
 
+  if (LL_DMA_IsEnabledIT_TC(DMA1, LL_DMA_CHANNEL_5) && LL_DMA_IsActiveFlag_TC5(DMA1)) {
+    uart_dmarx_done_isr(DEV_UART2);
+    LL_DMA_ClearFlag_TC5(DMA1);
+  }
   /* USER CODE END DMA1_Channel4_5_6_7_IRQn 0 */
 
   /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 1 */
-
+  if (LL_DMA_IsEnabledIT_TC(DMA1, LL_DMA_CHANNEL_4) && LL_DMA_IsActiveFlag_TC4(DMA1)) {
+    uart_dmatx_done_isr(DEV_UART2);
+    LL_DMA_ClearFlag_TC4(DMA1);
+  }
   /* USER CODE END DMA1_Channel4_5_6_7_IRQn 1 */
 }
 
@@ -190,7 +202,14 @@ void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
   //WIFI_UART_SetReceiveFlag();
-  WIFI_UART_ReceiveIdle();
+  //WIFI_UART_ReceiveIdle();
+  //uart_dmarx_idle_isr(DEV_UART2);
+
+    if (LL_USART_IsEnabledIT_IDLE(USART2) && LL_USART_IsActiveFlag_IDLE(USART2)) {
+        uart_dmarx_idle_isr(DEV_UART2);
+        LL_USART_ClearFlag_IDLE(USART2);
+        bsp_uart2_dmarx_config();
+    }
   /* USER CODE END USART2_IRQn 0 */
   /* USER CODE BEGIN USART2_IRQn 1 */
 

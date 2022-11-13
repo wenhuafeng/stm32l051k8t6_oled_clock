@@ -29,7 +29,7 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
@@ -40,6 +40,10 @@ void MX_USART1_UART_Init(void);
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+//extern void uart2_dma_init(uint8_t *mem_addr, uint32_t mem_size);
+extern uint16_t uart2_get_dmarx_buf_remain_size(void);
+extern void uart2_dmarx_config(uint8_t *mem_addr, uint32_t mem_size);
+extern void uart2_dmatx_config(uint8_t *mem_addr, uint32_t mem_size);
 
 /* USER CODE END Prototypes */
 

@@ -8,6 +8,7 @@
 #include "si7021.h"
 #include "wifi_uart_if.h"
 #include "esp8266_at.h"
+#include "wifi_uart.h"
 
 #define LOG_TAG          "common"
 #define SOFTWARE_VERSION "V101"
@@ -168,12 +169,29 @@ void COMMON_Init(void)
     LPTIM1_CounterStartIT();
     DISP_Init();
     SI7021_Init();
-    WIFI_UART_ReceiveDmaInit();
-    LOGI(LOG_TAG, "%s, %s, %s\r\n", SOFTWARE_VERSION, __TIME__, __DATE__);
+    //WIFI_UART_ReceiveDmaInit();
+    uart_device_init(DEV_UART2);
 
+    LOGI(LOG_TAG, "%s, %s, %s\r\n", SOFTWARE_VERSION, __TIME__, __DATE__);
     SI7021_SampleTempHumi();
     WIFI_Power(GetWifiData(), WIFI_POWER_ON);
 }
+
+//static void UsartDmaTest(void)
+//{
+//    uint16_t size = 0;
+//    uint8_t buf[256] = {0};
+//
+//    size = uart_read(DEV_UART2, buf, sizeof(buf));
+//    if (size == 0x00) {
+//        return;
+//    }
+//    LOGD(LOG_TAG, "read size:%d\r\n", size);
+//
+//    uart_write(DEV_UART2, buf, size);
+//    /* 将fifo数据拷贝到dma buf，并启动dma传输 */
+//    uart_poll_dma_tx(DEV_UART2);
+//}
 
 void COMMON_Function(void)
 {
@@ -186,5 +204,8 @@ void COMMON_Function(void)
     CLOCK_Run();
     SI7021_SampleTempHumi();
     WIFI_SendCommand(GetWifiData());
+    uart_poll_dma_tx(DEV_UART2);
+    WIFI_UART_DataRx();
+    //UsartDmaTest();
     DISP_Clock();
 }

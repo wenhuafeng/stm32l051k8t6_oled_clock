@@ -10,6 +10,7 @@
 #include "usart.h"
 #include "esp8266_at.h"
 #include "trace.h"
+#include "wifi_uart.h"
 
 #define LOG_TAG "wifi_uart_if"
 
@@ -90,16 +91,16 @@ void WIFI_UART_RxCpltCallback(USART_TypeDef *huart)
 {
 }
 
-static void USART_Printf(USART_TypeDef *USARTx, const uint8_t *buffer, size_t len)
-{
-    size_t idx = 0;
-
-    while (idx < len) {
-        LL_USART_TransmitData8(USARTx, *(buffer + idx));
-        TX_POLLING(!LL_USART_IsActiveFlag_TC(USARTx));
-        idx++;
-    }
-}
+//static void USART_Printf(USART_TypeDef *USARTx, const uint8_t *buffer, size_t len)
+//{
+//    size_t idx = 0;
+//
+//    while (idx < len) {
+//        LL_USART_TransmitData8(USARTx, *(buffer + idx));
+//        TX_POLLING(!LL_USART_IsActiveFlag_TC(USARTx));
+//        idx++;
+//    }
+//}
 
 void PrintUsart2(char *format, ...)
 {
@@ -110,7 +111,8 @@ void PrintUsart2(char *format, ...)
     va_start(ap, format);
     length = vsprintf(buf, format, ap);
     if (length > 0) {
-        USART_Printf(USART2, (uint8_t *)buf, length);
+        //USART_Printf(USART2, (uint8_t *)buf, length);
+        uart_write(DEV_UART2, (uint8_t *)buf, length);
     }
     va_end(ap);
 }
