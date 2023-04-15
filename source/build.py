@@ -111,11 +111,11 @@ def mdk_build():
 def main_func(parameter):
     start = datetime.datetime.now()
 
-    if parameter == 'gcc':
+    if parameter == 'g':
         gcc_build()
-    elif parameter == 'mdk':
+    elif parameter == 'm':
         mdk_build()
-    elif parameter == 'jlink':
+    elif parameter == 'j':
         jlink_run(jlink_loadfile)
     elif parameter == 'stlink':
         stlink_run()
