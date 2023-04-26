@@ -6,5 +6,7 @@
 
 编译说明：
 1，进入source目录。
-2，用gcc编译，执行python build.py gcc编译。
-3，用mdk编译，执行python build.py mdk编译。
+2，用gcc编译，执行“python build.py g”编译。
+3，用mdk编译，执行“python build.py m”编译。
+4，用jlink下载程序，执行“python build.py j”下载。
+5，用stlink下载程序，需要用到openocd，执行“python build.py stlink”下载。
