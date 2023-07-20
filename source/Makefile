@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = stm32l051k8t6_oled
+TARGET = system
 
 
 ######################################
@@ -36,29 +36,29 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-Core/Src/main.c \
-Core/Src/gpio.c \
-Core/Src/adc.c \
-Core/Src/i2c.c \
-Core/Src/rtc.c \
-Core/Src/spi.c \
-Core/Src/usart.c \
-Core/Src/lptim.c \
-Core/Src/dma.c \
-Core/Src/stm32l0xx_it.c \
-Core/Src/system_stm32l0xx.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_gpio.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_adc.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_dma.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_rcc.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_utils.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_exti.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_i2c.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_rtc.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_spi.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_usart.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_lptim.c \
-Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_pwr.c \
+stm32l051k8t6/Core/Src/main.c \
+stm32l051k8t6/Core/Src/gpio.c \
+stm32l051k8t6/Core/Src/adc.c \
+stm32l051k8t6/Core/Src/i2c.c \
+stm32l051k8t6/Core/Src/rtc.c \
+stm32l051k8t6/Core/Src/spi.c \
+stm32l051k8t6/Core/Src/usart.c \
+stm32l051k8t6/Core/Src/lptim.c \
+stm32l051k8t6/Core/Src/dma.c \
+stm32l051k8t6/Core/Src/stm32l0xx_it.c \
+stm32l051k8t6/Core/Src/system_stm32l0xx.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_gpio.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_adc.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_dma.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_rcc.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_utils.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_exti.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_i2c.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_rtc.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_spi.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_usart.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_lptim.c \
+stm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_pwr.c \
 user/clock/clock.c \
 user/common/common.c \
 user/common/fifo.c \
@@ -72,7 +72,9 @@ user/temp_humi/si7021_iic_sw.c \
 user/temp_humi/si7021.c \
 user/wifi/esp8266_at.c \
 user/wifi/wifi_uart_if.c \
-user/wifi/wifi_uart.c
+user/wifi/wifi_uart.c \
+user/SEGGER_RTT_V782c/RTT/SEGGER_RTT_printf.c \
+user/SEGGER_RTT_V782c/RTT/SEGGER_RTT.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -140,15 +142,17 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--ICore/Inc \
--IDrivers/STM32L0xx_HAL_Driver/Inc \
--IDrivers/CMSIS/Device/ST/STM32L0xx/Include \
--IDrivers/CMSIS/Include \
+-Istm32l051k8t6/Core/Inc \
+-Istm32l051k8t6/Drivers/STM32L0xx_HAL_Driver/Inc \
+-Istm32l051k8t6/Drivers/CMSIS/Device/ST/STM32L0xx/Include \
+-Istm32l051k8t6/Drivers/CMSIS/Include \
 -Iuser/clock \
 -Iuser/common \
 -Iuser/oled \
 -Iuser/temp_humi \
--Iuser/wifi
+-Iuser/wifi \
+-Iuser/SEGGER_RTT_V782c/Config \
+-Iuser/SEGGER_RTT_V782c/RTT
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

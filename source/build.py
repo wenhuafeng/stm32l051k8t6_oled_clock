@@ -1,90 +1,41 @@
 #!/usr/bin/env python
-
 import sys
 import os
 import datetime
 import platform
 import subprocess
 import shutil
+import psutil
+import signal
 
-# MDK build
-mdk_build_command = 'D:/Keil_v5/UV4/UV4.exe -j0 -r ./MDK-ARM/stm32l051k8t6_oled.uvprojx -o build_log.txt'
-mdk_build_log     = 'cat ./MDK-ARM/build_log.txt'
-
-# build out file
-gcc_source_file_hex = 'build/stm32l051k8t6_oled.hex'
-gcc_source_file_bin = 'build/stm32l051k8t6_oled.bin'
-mdk_source_file_hex = 'MDK-ARM/stm32l051k8t6_oled/stm32l051k8t6_oled.hex'
-mdk_source_file_bin = 'MDK-ARM/stm32l051k8t6_oled/stm32l051k8t6_oled.bin'
+# save file path
 target_path = 'user/output'
 
-# openocd define
-stlink_config_file = "user/openocd/stlink.cfg"
-chip_config_file = "user/openocd/stm32l0.cfg"
-program_cmd = "\"program user/output/stm32l051k8t6_oled.bin 0x8000000\""
+stm32 = 'stm32l0'
+cs32 = 'cs32f030c8t6'
+gd32 = 'gd32f303rc'
 
-def stlink_run():
-    host_os = platform.system()
-    print("host os: %s" % host_os)
-
-    if host_os == 'Windows':
-        openocd_exe = "openocd.exe"
-    elif host_os == 'Linux':
-        openocd_exe = "openocd"
-    else:
-        print("unsupport platform")
-        sys.exit(2)
-
-    exec_cmd = "%s -f %s -f %s -c init -c halt -c %s -c reset -c shutdown\n" % (openocd_exe, stlink_config_file, chip_config_file, program_cmd)
-    print("execute cmd: %s" % exec_cmd)
-    subprocess.call(exec_cmd, shell=True)
-
-# JLink define
-jlink_loadfile = 'user/output/stm32l051k8t6_oled.hex'
-device = "STM32L0"
-interface = "SWD"
-speed = "1000"
-address = "0x8000000"
-jlink_cmdfile = ""
-
-def gen_jlink_cmdfile(loadfile):
-    global address, jlink_cmdfile
-
-    dirname = os.path.dirname(os.path.abspath(loadfile))
-    jlink_cmdfile = os.path.join(dirname, "%s.jlink" % device)
-    print("gen jlink commands file: %s" % jlink_cmdfile)
+def gen_jlink_cmdfile(si, speed, loadfile, dev, addr):
+    cmdfile = os.path.join(os.path.dirname(os.path.abspath(loadfile)), (dev + '.jlink'))
+    print(f"gen jlink commands file: {cmdfile}")
 
     try:
-        f = open(jlink_cmdfile, 'w')
-        f.write("h\n")
-        f.write("loadfile %s %s\n" % (loadfile, address))
-        f.write("g\n")
-        f.write("r\n")
-        f.write("qc")
-    except IOError:
-        print(IOError)  # will print something like "option -a not recognized"
+        with open(cmdfile, 'w') as f:
+            f.write(si)
+            f.write(speed)
+            device = 'device ' + dev
+            f.write(f"{device}\nr\nh\nerase\nloadfile {loadfile} {addr}\nr\nms 10\nq\n")
+    except IOError as e:
+        print(f"IOError: {e}")
         sys.exit(2)
 
-def jlink_run(loadfile):
-    global device, interface, speed, jlink_cmdfile
-
-    host_os = platform.system()
-    print("host os: %s" % host_os)
-    gen_jlink_cmdfile(loadfile)
-
-    if host_os == 'Windows':
-        jlink_exe = "JLink.exe"
-    elif host_os == 'Linux':
-        jlink_exe = "JLinkExe"
-    else:
-        print("unsupport platform")
-        sys.exit(2)
-
-    exec_cmd = "%s -device %s -if %s -speed %s -CommanderScript %s" % (jlink_exe, device, interface, speed, jlink_cmdfile)
-    print("execute cmd: %s" % exec_cmd)
-    subprocess.call(exec_cmd, shell=True)
+    return cmdfile
 
 def cp_build_file(source, target):
+    if not os.path.exists(source):
+        print(f"Source file {source} does not exist.")
+        return
+
     assert not os.path.isabs(source)
 
     try:
@@ -94,34 +45,177 @@ def cp_build_file(source, target):
     except:
         print("Unexpected error:", sys.exc_info())
 
-def gcc_build():
-    print("cc type = gcc")
-    os.system('make clean')
-    os.system('make -j8')
-    cp_build_file(gcc_source_file_hex, target_path)
-    cp_build_file(gcc_source_file_bin, target_path)
+def rm_dir(dir_path):
+    try:
+        shutil.rmtree(dir_path)
+    except OSError as e:
+        print("Error:%s:%s" % (dir_path, e.strerror))
 
-def mdk_build():
-    print("cc type = MDK")
-    os.system(mdk_build_command)
-    os.system(mdk_build_log)
-    cp_build_file(mdk_source_file_hex, target_path)
-    cp_build_file(mdk_source_file_bin, target_path)
+def cmd_run(cmd, background=False):
+    if background:
+        subprocess.Popen(cmd, shell=True)
+    else:
+        subprocess.run(cmd, shell=True, check=True)
 
-def main_func(parameter):
-    start = datetime.datetime.now()
+def build(cc_type, dir_path, build_command, build_log, source_file_hex, source_file_bin):
+    print(f"cc type = {cc_type}, wait ...")
+    rm_dir(dir_path)
+    cmd_run(build_command)
+    cmd_run(build_log)
+    cp_build_file(source_file_hex, target_path)
+    cp_build_file(source_file_bin, target_path)
 
-    if parameter == 'g':
-        gcc_build()
-    elif parameter == 'm':
-        mdk_build()
-    elif parameter == 'j':
-        jlink_run(jlink_loadfile)
-    elif parameter == 'stlink':
-        stlink_run()
+def build_select(parameter):
+    function_map = {
+        'g': lambda: build('gcc', \
+                            './build', \
+                            'make clean', \
+                            'make -j8', \
+                            'build/system.hex', \
+                            'build/system.bin'),
+        'ms': lambda: build('mdk', \
+                            './stm32l051k8t6/MDK-ARM/system', \
+                            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./stm32l051k8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
+                            'cat ./stm32l051k8t6/MDK-ARM/build_log.txt', \
+                            'stm32l051k8t6/MDK-ARM/system/system.hex', \
+                            'stm32l051k8t6/MDK-ARM/system/system.bin'),
+        'mc': lambda: build('mdk', \
+                            './cs32f030c8t6/MDK-ARM/system', \
+                            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./cs32f030c8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
+                            'cat ./cs32f030c8t6/MDK-ARM/build_log.txt', \
+                            'cs32f030c8t6/MDK-ARM/system/system.hex', \
+                            'cs32f030c8t6/MDK-ARM/system/system.bin'),
+        'mg': lambda: build('mdk', \
+                            './gd32f303rbt6/MDK-ARM/system', \
+                            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./gd32f303rbt6/MDK-ARM/system.uvprojx -o build_log.txt', \
+                            'cat ./gd32f303rbt6/MDK-ARM/build_log.txt', \
+                            'gd32f303rbt6/MDK-ARM/system/system.hex', \
+                            'gd32f303rbt6/MDK-ARM/system/system.bin'),
+    }
+
+    func = function_map.get(parameter)
+    if func:
+        func()
     else:
         print("input parameter error!")
 
+def jlink_run(loadfile, dev):
+    si = 'si 1\n'
+    speed_cmd = 'speed 4000\n'
+    address = '0x8000000'
+
+    host_os = platform.system()
+    print("host os: %s" % host_os)
+    jlink_cmdfile = gen_jlink_cmdfile(si, speed_cmd, loadfile, dev, address)
+
+    jlink_exe_map = {
+        'Windows': "Jlink.exe",
+        'Linux': "JLinkExe"
+    }
+
+    jlink_exe = jlink_exe_map.get(host_os)
+    if jlink_exe is None:
+        print("Unsupported platform")
+        sys.exit(2)
+
+    if host_os == 'Windows' and dev not in [cs32, stm32, gd32]:
+        print("Device chip error!")
+
+    exec_cmd = "%s -CommanderScript %s" % (jlink_exe, jlink_cmdfile)
+    print("execute cmd: %s" % exec_cmd)
+    subprocess.call(exec_cmd, shell=True)
+
+def make_openocd_cfg(if_type, rtt):
+    if if_type == 'daplink':
+        interface = 'source [find interface/cmsis-dap.cfg]'
+    elif if_type == 'stlink':
+        interface = 'source [find interface/stlink.cfg]'
+    transport = 'transport select swd'
+    target = 'source [find target/stm32l0.cfg]'
+    speed = 'adapter speed 1000'
+    init = 'init'
+    halt = 'halt'
+    program = 'program user/output/system.bin 0x8000000'
+    reset = 'reset'
+    shutdown = 'shutdown'
+
+    rtt_setup = 'rtt setup 0x20000000 0x2000 "SEGGER RTT"'
+    rtt_start = 'rtt start'
+    rtt_server_start = 'rtt server start 8888 0'
+
+    with open('user/openocd/openocd.cfg', 'w') as f:
+        if rtt == True:
+            f.write(f"{interface}\n{target}\n{speed}\n{init}\n{rtt_setup}\n{rtt_start}\n{rtt_server_start}")
+        else:
+            f.write(f"{interface}\n{target}\n{speed}\n{init}\n{halt}\n{program}\n{reset}\n{shutdown}")
+
+def close_program(program_name):
+    for proc in psutil.process_iter(['pid', 'name']):
+        if proc.info['name'] == program_name:
+            proc.terminate()
+
+def run_openocd():
+    openocd_exe = 'openocd.exe'
+    close_program(openocd_exe)
+    # Execute the OpenOCD script
+    exec_cmd = f"{openocd_exe} -f user/openocd/openocd.cfg"
+    print(f"execute cmd: {exec_cmd}")
+    subprocess.Popen(exec_cmd, shell=True)
+
+def run_putty():
+    putty_exe = 'putty.exe'
+    close_program(putty_exe)
+    subprocess.Popen(f'{putty_exe} -telnet -P 8888 127.0.0.1', shell=True)
+
+def link_run(if_type, rtt):
+    make_openocd_cfg(if_type, rtt)
+    run_openocd()
+
+def download_select(parameter):
+    function_map = {
+        'js': lambda: jlink_run('user/output/system.hex', stm32),
+        'jc': lambda: jlink_run('user/output/system.hex', cs32),
+        'jg': lambda: jlink_run('user/output/system.hex', gd32),
+        'daplink' : lambda: link_run('daplink', False),
+        'stlink' : lambda: link_run('stlink', False),
+        'daplink_rtt' : lambda: link_run('daplink', True),
+        'stlink_rtt' : lambda: link_run('stlink', True)
+    }
+
+    func = function_map.get(parameter)
+    if func:
+        func()
+    else:
+        print("input parameter error!")
+
+def checksum_file(path):
+    current_dir = os.getcwd()
+    os.chdir(path)
+    subprocess.run(['checksum.exe', 'system.bin', 'CRC32'])
+    os.chdir(current_dir)
+
+def common(parameter):
+    build_params = ['g', 'ms', 'mc', 'mg']
+    download_params = ['js', 'jc', 'jg', 'daplink', 'stlink', 'daplink_rtt', 'stlink_rtt']
+
+    try:
+        if parameter in build_params:
+            build_select(parameter)
+            print("\r\n")
+            checksum_file(target_path)
+        elif parameter in download_params:
+            download_select(parameter)
+            if parameter == 'daplink_rtt' or parameter == 'stlink_rtt':
+                run_putty()
+        else:
+            print("parameter error!")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
+
+def main_func(parameter):
+    start = datetime.datetime.now()
+    common(parameter)
     end = datetime.datetime.now()
     print('run time: %s second' %(end - start))
 

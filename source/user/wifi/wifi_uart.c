@@ -170,7 +170,7 @@ void uart_dmarx_half_done_isr(uint8_t uart_id)
  */
 void uart_dmarx_idle_isr(uint8_t uart_id)
 {
-    uint16_t recv_total_size;
+    uint16_t recv_total_size = 0x00;
     uint16_t recv_size;
 
     if (uart_id == 0) {
@@ -228,9 +228,13 @@ void uart_poll_dma_tx(uint8_t uart_id)
 void WIFI_UART_DataRx(void)
 {
     enum WifiReceiveInfo info;
-    struct Esp8266GetTimeType *wifi;
+    struct Esp8266GetTimeType *wifi = GetWifiData();;
     uint8_t buf[256];
     uint8_t size;
+
+    if (wifi->wifiPowerStatus == WIFI_POWER_OFF) {
+        return;
+    }
 
     size = uart_read(DEV_UART2, buf, sizeof(buf));
     if (size == 0x00) {
@@ -239,7 +243,6 @@ void WIFI_UART_DataRx(void)
     }
     LOGD(LOG_TAG, "read size:%d\r\n", size);
 
-    wifi = GetWifiData();
     info = WIFI_ReceiveProcess(wifi, buf);
     if (info == WIFI_GET_TIME_COMPLETE) {
         CLOCK_Set(&wifi->time);

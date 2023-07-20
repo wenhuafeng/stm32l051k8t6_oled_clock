@@ -2,6 +2,7 @@
 #if defined(SUPPORT_OLED_DISPLAY) && SUPPORT_OLED_DISPLAY
 #include "display.h"
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include "ssd1306.h"
 #include "fonts.h"

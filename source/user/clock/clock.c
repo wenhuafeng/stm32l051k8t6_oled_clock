@@ -11,7 +11,7 @@ struct TimeType g_time = {
     .hour = 0,
     .day = 1,
     .month = 1,
-    .year = 2022
+    .year = 2024
 };
 
 static uint8_t GetMaxDay(uint16_t year, uint8_t month)

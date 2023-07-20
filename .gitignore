@@ -1,3 +1,7 @@
 source/build
-source/MDK-ARM/stm32l051k8t6_oled
+source/stm32l051k8t6/MDK-ARM/DebugConfig
+source/stm32l051k8t6/MDK-ARM/RTE
+source/stm32l051k8t6/MDK-ARM/system
+source/stm32l051k8t6/MDK-ARM/*.txt
+source/stm32l051k8t6/MDK-ARM/*.lst
 source/nul.d
