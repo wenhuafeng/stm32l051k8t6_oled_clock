@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -188,10 +188,10 @@ void DMA1_Channel4_5_6_7_IRQHandler(void)
 void LPTIM1_IRQHandler(void)
 {
   /* USER CODE BEGIN LPTIM1_IRQn 0 */
-
+  LPTIM1_IsrHandle();
   /* USER CODE END LPTIM1_IRQn 0 */
   /* USER CODE BEGIN LPTIM1_IRQn 1 */
-  LPTIM1_IsrHandle();
+
   /* USER CODE END LPTIM1_IRQn 1 */
 }
 
@@ -201,15 +201,11 @@ void LPTIM1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-  //WIFI_UART_SetReceiveFlag();
-  //WIFI_UART_ReceiveIdle();
-  //uart_dmarx_idle_isr(DEV_UART2);
-
-    if (LL_USART_IsEnabledIT_IDLE(USART2) && LL_USART_IsActiveFlag_IDLE(USART2)) {
-        uart_dmarx_idle_isr(DEV_UART2);
-        LL_USART_ClearFlag_IDLE(USART2);
-        bsp_uart2_dmarx_config();
-    }
+  if (LL_USART_IsEnabledIT_IDLE(USART2) && LL_USART_IsActiveFlag_IDLE(USART2)) {
+    uart_dmarx_idle_isr(DEV_UART2);
+    LL_USART_ClearFlag_IDLE(USART2);
+    bsp_uart2_dmarx_config();
+  }
   /* USER CODE END USART2_IRQn 0 */
   /* USER CODE BEGIN USART2_IRQn 1 */
 

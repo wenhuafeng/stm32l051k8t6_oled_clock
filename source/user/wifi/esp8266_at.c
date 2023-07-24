@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "main.h"
+#include "gpio.h"
 #include "usart.h"
 #include "clock.h"
 #include "wifi_uart_if.h"
@@ -38,18 +39,6 @@
 #define HOUR_MAX  23
 #define MIN_MAX   59
 #define SEC_MAX   59
-
-#define WIFI_PD_Pin  LL_GPIO_PIN_1
-#define WIFI_PD_Port GPIOA
-
-#define WIFI_PD_HIGH()                                   \
-    do {                                                 \
-        LL_GPIO_SetOutputPin(WIFI_PD_Port, WIFI_PD_Pin); \
-    } while (0)
-#define WIFI_PD_LOW()                                      \
-    do {                                                   \
-        LL_GPIO_ResetOutputPin(WIFI_PD_Port, WIFI_PD_Pin); \
-    } while (0)
 
 #define WIFI_OFF            0
 #define WIFI_ON_TIME        (2 * 60) /* 2 min */

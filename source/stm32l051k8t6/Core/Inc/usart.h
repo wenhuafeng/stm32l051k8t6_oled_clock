@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -40,11 +40,9 @@ void MX_USART1_UART_Init(void);
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-//extern void uart2_dma_init(uint8_t *mem_addr, uint32_t mem_size);
 extern uint16_t uart2_get_dmarx_buf_remain_size(void);
 extern void uart2_dmarx_config(uint8_t *mem_addr, uint32_t mem_size);
 extern void uart2_dmatx_config(uint8_t *mem_addr, uint32_t mem_size);
-
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

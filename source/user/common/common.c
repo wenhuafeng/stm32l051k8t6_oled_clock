@@ -174,6 +174,7 @@ void COMMON_Init(void)
 
     LOGI(LOG_TAG, "%s, %s, %s\r\n", SOFTWARE_VERSION, __TIME__, __DATE__);
     SI7021_SampleTempHumi();
+    LL_mDelay(500);
     WIFI_Power(GetWifiData(), WIFI_POWER_ON);
 }
 
@@ -193,7 +194,7 @@ void COMMON_Init(void)
 //    uart_poll_dma_tx(DEV_UART2);
 //}
 
-void COMMON_Function(void)
+void COMMON_Run(void)
 {
     if (f_1s == false) {
         return;

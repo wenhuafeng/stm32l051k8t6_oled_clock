@@ -1,4 +1,4 @@
-[Time]2023-07-20 21:47:48 : Info:  [main] version: v1.0.2 Jul 12 2023 22:39:00
-[Time]2023-07-20 21:47:48 : Info:  [common] system.bin modify time: 2023-07-20 21:47:48
-[Time]2023-07-20 21:47:48 : Info:  [common] system.bin file size: 24072
-[Time]2023-07-20 21:47:48 : Info:  [crc32] 962df7af
+[Time]2023-07-24 22:30:29 : Info:  [main] version: v1.0.2 Jul 12 2023 22:39:00
+[Time]2023-07-24 22:30:29 : Info:  [common] system.bin modify time: 2023-07-24 22:30:29
+[Time]2023-07-24 22:30:29 : Info:  [common] system.bin file size: 24008
+[Time]2023-07-24 22:30:29 : Info:  [crc32] 2f3cf97a

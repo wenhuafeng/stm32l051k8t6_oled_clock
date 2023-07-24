@@ -87,7 +87,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     DMA1_Channel1_IRQHandler       ; DMA1 Channel 1
                 DCD     DMA1_Channel2_3_IRQHandler     ; DMA1 Channel 2 and Channel 3
                 DCD     DMA1_Channel4_5_6_7_IRQHandler ; DMA1 Channel 4, Channel 5, Channel 6 and Channel 7
-                DCD     ADC1_COMP_IRQHandler           ; ADC1, COMP1 and COMP2 
+                DCD     ADC1_COMP_IRQHandler           ; ADC1, COMP1 and COMP2
                 DCD     LPTIM1_IRQHandler              ; LPTIM1
                 DCD     0                              ; Reserved
                 DCD     TIM2_IRQHandler                ; TIM2
@@ -107,7 +107,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     LPUART1_IRQHandler             ; LPUART1
                 DCD     0                              ; Reserved
                 DCD     0                              ; Reserved
-                
+
 __Vectors_End
 
 __Vectors_Size  EQU  __Vectors_End - __Vectors
@@ -189,7 +189,7 @@ EXTI4_15_IRQHandler
 DMA1_Channel1_IRQHandler
 DMA1_Channel2_3_IRQHandler
 DMA1_Channel4_5_6_7_IRQHandler
-ADC1_COMP_IRQHandler 
+ADC1_COMP_IRQHandler
 LPTIM1_IRQHandler
 TIM2_IRQHandler
 TIM6_IRQHandler
@@ -213,16 +213,16 @@ LPUART1_IRQHandler
 ; User Stack and Heap initialization
 ;*******************************************************************************
                  IF      :DEF:__MICROLIB
-                
+
                  EXPORT  __initial_sp
                  EXPORT  __heap_base
                  EXPORT  __heap_limit
-                
+
                  ELSE
-                
+
                  IMPORT  __use_two_region_memory
                  EXPORT  __user_initial_stackheap
-                 
+
 __user_initial_stackheap
 
                  LDR     R0, =  Heap_Mem

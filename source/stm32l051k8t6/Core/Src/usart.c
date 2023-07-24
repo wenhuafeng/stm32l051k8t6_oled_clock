@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -170,7 +170,7 @@ void MX_USART2_UART_Init(void)
   LL_USART_ConfigAsyncMode(USART2);
   LL_USART_Enable(USART2);
   /* USER CODE BEGIN USART2_Init 2 */
-  LL_USART_EnableIT_IDLE(USART2);
+
   /* USER CODE END USART2_Init 2 */
 
 }
@@ -207,5 +207,4 @@ void uart2_dmatx_config(uint8_t *mem_addr, uint32_t mem_size)
   LL_DMA_ClearFlag_GI4(DMA1);
   LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
 }
-
 /* USER CODE END 1 */

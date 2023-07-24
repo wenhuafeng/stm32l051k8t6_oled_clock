@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -33,7 +33,8 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-
+#define WIFI_PD_LOW() LL_GPIO_ResetOutputPin(WIFI_ENABLE_GPIO_Port, WIFI_ENABLE_Pin)
+#define WIFI_PD_HIGH() LL_GPIO_SetOutputPin(WIFI_ENABLE_GPIO_Port, WIFI_ENABLE_Pin)
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);

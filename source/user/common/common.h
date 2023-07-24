@@ -24,6 +24,6 @@
 
 extern void LPTIM1_IsrHandle(void);
 extern void COMMON_Init(void);
-extern void COMMON_Function(void);
+extern void COMMON_Run(void);
 
 #endif
