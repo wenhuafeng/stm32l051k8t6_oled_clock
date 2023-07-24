@@ -6,7 +6,7 @@ import platform
 import subprocess
 import shutil
 import psutil
-import signal
+import argparse
 
 # save file path
 target_path = 'user/output'
@@ -66,36 +66,36 @@ def build(cc_type, dir_path, build_command, build_log, source_file_hex, source_f
     cp_build_file(source_file_bin, target_path)
 
 def build_select(parameter):
-    function_map = {
-        'g': lambda: build('gcc', \
-                            './build', \
-                            'make clean', \
-                            'make -j8', \
-                            'build/system.hex', \
-                            'build/system.bin'),
-        'ms': lambda: build('mdk', \
-                            './stm32l051k8t6/MDK-ARM/system', \
-                            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./stm32l051k8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
-                            'cat ./stm32l051k8t6/MDK-ARM/build_log.txt', \
-                            'stm32l051k8t6/MDK-ARM/system/system.hex', \
-                            'stm32l051k8t6/MDK-ARM/system/system.bin'),
-        'mc': lambda: build('mdk', \
-                            './cs32f030c8t6/MDK-ARM/system', \
-                            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./cs32f030c8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
-                            'cat ./cs32f030c8t6/MDK-ARM/build_log.txt', \
-                            'cs32f030c8t6/MDK-ARM/system/system.hex', \
-                            'cs32f030c8t6/MDK-ARM/system/system.bin'),
-        'mg': lambda: build('mdk', \
-                            './gd32f303rbt6/MDK-ARM/system', \
-                            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./gd32f303rbt6/MDK-ARM/system.uvprojx -o build_log.txt', \
-                            'cat ./gd32f303rbt6/MDK-ARM/build_log.txt', \
-                            'gd32f303rbt6/MDK-ARM/system/system.hex', \
-                            'gd32f303rbt6/MDK-ARM/system/system.bin'),
+    build_params = {
+        'g': ('gcc', \
+              './build', \
+              'make clean', \
+              'make -j8', \
+              'build/system.hex', \
+              'build/system.bin'),
+        'ms': ('mdk', \
+               './stm32l051k8t6/MDK-ARM/system', \
+               'D:/Keil_v5/UV4/UV4.exe -j0 -r ./stm32l051k8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
+               'cat ./stm32l051k8t6/MDK-ARM/build_log.txt', \
+               'stm32l051k8t6/MDK-ARM/system/system.hex', \
+               'stm32l051k8t6/MDK-ARM/system/system.bin'),
+        'mc': ('mdk', \
+               './cs32f030c8t6/MDK-ARM/system', \
+               'D:/Keil_v5/UV4/UV4.exe -j0 -r ./cs32f030c8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
+               'cat ./cs32f030c8t6/MDK-ARM/build_log.txt', \
+               'cs32f030c8t6/MDK-ARM/system/system.hex', \
+               'cs32f030c8t6/MDK-ARM/system/system.bin'),
+        'mg': ('mdk', \
+               './gd32f303rbt6/MDK-ARM/system', \
+               'D:/Keil_v5/UV4/UV4.exe -j0 -r ./gd32f303rbt6/MDK-ARM/system.uvprojx -o build_log.txt', \
+               'cat ./gd32f303rbt6/MDK-ARM/build_log.txt', \
+               'gd32f303rbt6/MDK-ARM/system/system.hex', \
+               'gd32f303rbt6/MDK-ARM/system/system.bin'),
     }
 
-    func = function_map.get(parameter)
-    if func:
-        func()
+    params = build_params.get(parameter)
+    if params:
+        build(*params)
     else:
         print("input parameter error!")
 
@@ -213,11 +213,15 @@ def common(parameter):
         print(f"An error occurred: {e}")
         sys.exit(1)
 
-def main_func(parameter):
+def main():
+    parser = argparse.ArgumentParser(description='Build script.')
+    parser.add_argument('parameter', help='The parameter for the build script.')
+    args = parser.parse_args()
+
     start = datetime.datetime.now()
-    common(parameter)
+    common(args.parameter)
     end = datetime.datetime.now()
     print('run time: %s second' %(end - start))
 
 if __name__ == "__main__":
-    main_func(sys.argv[1])
+    main()
