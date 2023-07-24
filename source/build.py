@@ -15,6 +15,11 @@ stm32 = 'stm32l0'
 cs32 = 'cs32f030c8t6'
 gd32 = 'gd32f303rc'
 
+def handle_error(e):
+    """Handle exceptions in a unified way."""
+    print(f"An error occurred: {e}")
+    sys.exit(1)
+
 def gen_jlink_cmdfile(si, speed, loadfile, dev, addr):
     cmdfile = os.path.join(os.path.dirname(os.path.abspath(loadfile)), (dev + '.jlink'))
     print(f"gen jlink commands file: {cmdfile}")
@@ -65,39 +70,50 @@ def build(cc_type, dir_path, build_command, build_log, source_file_hex, source_f
     cp_build_file(source_file_hex, target_path)
     cp_build_file(source_file_bin, target_path)
 
-def build_select(parameter):
-    build_params = {
-        'g': ('gcc', \
-              './build', \
-              'make clean', \
-              'make -j8', \
-              'build/system.hex', \
-              'build/system.bin'),
-        'ms': ('mdk', \
-               './stm32l051k8t6/MDK-ARM/system', \
-               'D:/Keil_v5/UV4/UV4.exe -j0 -r ./stm32l051k8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
-               'cat ./stm32l051k8t6/MDK-ARM/build_log.txt', \
-               'stm32l051k8t6/MDK-ARM/system/system.hex', \
-               'stm32l051k8t6/MDK-ARM/system/system.bin'),
-        'mc': ('mdk', \
-               './cs32f030c8t6/MDK-ARM/system', \
-               'D:/Keil_v5/UV4/UV4.exe -j0 -r ./cs32f030c8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
-               'cat ./cs32f030c8t6/MDK-ARM/build_log.txt', \
-               'cs32f030c8t6/MDK-ARM/system/system.hex', \
-               'cs32f030c8t6/MDK-ARM/system/system.bin'),
-        'mg': ('mdk', \
-               './gd32f303rbt6/MDK-ARM/system', \
-               'D:/Keil_v5/UV4/UV4.exe -j0 -r ./gd32f303rbt6/MDK-ARM/system.uvprojx -o build_log.txt', \
-               'cat ./gd32f303rbt6/MDK-ARM/build_log.txt', \
-               'gd32f303rbt6/MDK-ARM/system/system.hex', \
-               'gd32f303rbt6/MDK-ARM/system/system.bin'),
-    }
-
-    params = build_params.get(parameter)
-    if params:
-        build(*params)
+def select_action(parameter, action_map):
+    """Select and execute an action based on the parameter."""
+    action = action_map.get(parameter)
+    if action:
+        action()
     else:
         print("input parameter error!")
+
+def build_select(parameter):
+    build_params = {
+        'g': lambda: build( \
+            'gcc', \
+            './build', \
+            'make clean', \
+            'make -j8', \
+            'build/system.hex', \
+            'build/system.bin' \
+        ),
+        'ms': lambda: build( \
+            'mdk', \
+            './stm32l051k8t6/MDK-ARM/system', \
+            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./stm32l051k8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
+            'cat ./stm32l051k8t6/MDK-ARM/build_log.txt', \
+            'stm32l051k8t6/MDK-ARM/system/system.hex', \
+            'stm32l051k8t6/MDK-ARM/system/system.bin' \
+        ),
+        'mc': lambda: build( \
+            'mdk', \
+            './cs32f030c8t6/MDK-ARM/system', \
+            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./cs32f030c8t6/MDK-ARM/system.uvprojx -o build_log.txt', \
+            'cat ./cs32f030c8t6/MDK-ARM/build_log.txt', \
+            'cs32f030c8t6/MDK-ARM/system/system.hex', \
+            'cs32f030c8t6/MDK-ARM/system/system.bin' \
+        ),
+        'mg': lambda: build( \
+            'mdk', \
+            './gd32f303rbt6/MDK-ARM/system', \
+            'D:/Keil_v5/UV4/UV4.exe -j0 -r ./gd32f303rbt6/MDK-ARM/system.uvprojx -o build_log.txt', \
+            'cat ./gd32f303rbt6/MDK-ARM/build_log.txt', \
+            'gd32f303rbt6/MDK-ARM/system/system.hex', \
+            'gd32f303rbt6/MDK-ARM/system/system.bin' \
+        ),
+    }
+    select_action(parameter, build_params)
 
 def jlink_run(loadfile, dev):
     si = 'si 1\n'
@@ -117,9 +133,6 @@ def jlink_run(loadfile, dev):
     if jlink_exe is None:
         print("Unsupported platform")
         sys.exit(2)
-
-    if host_os == 'Windows' and dev not in [cs32, stm32, gd32]:
-        print("Device chip error!")
 
     exec_cmd = "%s -CommanderScript %s" % (jlink_exe, jlink_cmdfile)
     print("execute cmd: %s" % exec_cmd)
@@ -172,27 +185,25 @@ def link_run(if_type, rtt):
     run_openocd()
 
 def download_select(parameter):
-    function_map = {
+    download_params = {
         'js': lambda: jlink_run('user/output/system.hex', stm32),
         'jc': lambda: jlink_run('user/output/system.hex', cs32),
         'jg': lambda: jlink_run('user/output/system.hex', gd32),
-        'daplink' : lambda: link_run('daplink', False),
-        'stlink' : lambda: link_run('stlink', False),
-        'daplink_rtt' : lambda: link_run('daplink', True),
-        'stlink_rtt' : lambda: link_run('stlink', True)
+        'daplink': lambda: link_run('daplink', False),
+        'stlink': lambda: link_run('stlink', False),
+        'daplink_rtt': lambda: link_run('daplink', True),
+        'stlink_rtt': lambda: link_run('stlink', True)
     }
-
-    func = function_map.get(parameter)
-    if func:
-        func()
-    else:
-        print("input parameter error!")
+    select_action(parameter, download_params)
 
 def checksum_file(path):
+    """Calculate the checksum of a file."""
     current_dir = os.getcwd()
     os.chdir(path)
-    subprocess.run(['checksum.exe', 'system.bin', 'CRC32'])
-    os.chdir(current_dir)
+    try:
+        subprocess.run(['checksum.exe', 'system.bin', 'CRC32'], check=True)
+    finally:
+        os.chdir(current_dir)
 
 def common(parameter):
     build_params = ['g', 'ms', 'mc', 'mg']
@@ -205,13 +216,12 @@ def common(parameter):
             checksum_file(target_path)
         elif parameter in download_params:
             download_select(parameter)
-            if parameter == 'daplink_rtt' or parameter == 'stlink_rtt':
+            if parameter in ['daplink_rtt', 'stlink_rtt']:
                 run_putty()
         else:
             print("parameter error!")
     except Exception as e:
-        print(f"An error occurred: {e}")
-        sys.exit(1)
+        handle_error(e)
 
 def main():
     parser = argparse.ArgumentParser(description='Build script.')
